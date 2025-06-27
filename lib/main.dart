@@ -1,5 +1,7 @@
 import 'package:agronova/ventana_registro.dart';
 import 'package:flutter/material.dart';
+import 'package:agronova/ventanaHTTP.dart';
+import 'package:agronova/pagina_inicio.dart';
 
 void main() {
   runApp(const MyApp());
@@ -65,10 +67,16 @@ class _MyHomePageState extends State<MyHomePage> {
     _validate();
     String correoIngresado = controladorCorreo.text;
     String claveIngresada = controladorClave.text;
+
     if ((correoIngresado == _correo) && (claveIngresada == _clave)) {
-      print('Acceso Concedido');
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const PaginaInicio()),
+      );
     } else {
-      print('Acceso Negado');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Correo o contraseña incorrectos')),
+      );
     }
   }
 
