@@ -86,7 +86,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('asset/fondoTarea.jpg'),
+            image: AssetImage('assets/fondo.png'),
             fit: BoxFit.cover,
           ),
         ),
@@ -94,6 +94,16 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
+              const Text(
+                'AgroNova – Sistema Inteligente de Gestión Agrícola',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+              const SizedBox(height: 30),
               SizedBox(
                 width: 250,
                 child: TextField(
@@ -105,7 +115,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               SizedBox(
                 width: 250,
                 child: TextField(
@@ -117,7 +127,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               SizedBox(
                 width: 250,
                 child: FilledButton(
@@ -125,12 +135,11 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: const Text('Ingresar'),
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               SizedBox(
                 width: 250,
                 child: FilledButton(
                   onPressed: _irVentanaRegistro,
-
                   child: const Text('Registrarse'),
                 ),
               ),

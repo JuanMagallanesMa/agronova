@@ -1,0 +1,27 @@
+[
+  {
+    "nombre": "Agricultores",
+    "descripcion": "Información sobre agricultores y sus actividades.",
+    "imagen": "assets/ic_agricultor.jpg"
+  },
+  {
+    "nombre": "Cultivos",
+    "descripcion": "Datos sobre los diferentes tipos de cultivos.",
+    "imagen": "assets/ic_cultivo.jpg"
+  },
+  {
+    "nombre": "Inventario Agrícola",
+    "descripcion": "Control de herramientas, fertilizantes y maquinaria.",
+    "imagen": "assets/ic_inventario.jpg"
+  },
+  {
+    "nombre": "Tarea de Riego y Fertilización",
+    "descripcion": "Programación y monitoreo de riego y fertilización.",
+    "imagen": "assets/ic_riego.jpg"
+  },
+  {
+    "nombre": "Mercado y Ventas",
+    "descripcion": "Registros de ventas y tendencias del mercado.",
+    "imagen": "assets/ic_mercado.jpg"
+  }
+]

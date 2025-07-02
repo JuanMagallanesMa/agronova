@@ -59,7 +59,14 @@ flutter:
   # the material Icons class.
   uses-material-design: true
   assets:
-      - asset/fondoTarea.jpg
+      - assets/fondo.png
+      - assets/datos.json
+      - assets/ic_agricultor.jpg
+      - assets/ic_cultivo.jpg
+      - assets/ic_inventario.jpg
+      - assets/ic_riego.jpg
+      - assets/ic_mercado.jpg
+      - assets/datos_acerca.json
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg
@@ -90,3 +97,4 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+    

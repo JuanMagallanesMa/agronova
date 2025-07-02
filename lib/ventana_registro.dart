@@ -103,7 +103,6 @@ class _MyHomePageStateVentanaRegistro extends State<MyHomePageVentanaRegistro> {
 
   void _limpiarFormulario() {
     setState(() {
-      
       controladorNombresApellidos.clear();
       controladorCedula.clear();
       controladorCorreo.clear();
@@ -143,7 +142,7 @@ class _MyHomePageStateVentanaRegistro extends State<MyHomePageVentanaRegistro> {
       body: Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('asset/fondoTarea.jpg'),
+            image: AssetImage('assets/fondo.png'),
             fit: BoxFit.cover,
           ),
         ),

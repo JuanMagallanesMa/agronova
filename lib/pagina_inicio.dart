@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:agronova/ventanaHTTP.dart';
 import 'package:agronova/pagina_categorias.dart';
+import 'package:agronova/pagina_acerca.dart';
 
 class PaginaInicio extends StatefulWidget {
   const PaginaInicio({super.key});
@@ -12,8 +13,11 @@ class PaginaInicio extends StatefulWidget {
 class _PaginaInicioState extends State<PaginaInicio> {
   int _paginaSeleccionada = 0;
 
-  // Lista de widgets que se mostrará según la pestaña activa
-  final List<Widget> _paginas = [const PaginaCategorias(), const VentanaHTTP()];
+  final List<Widget> _paginas = [
+    const PaginaCategorias(),
+    const VentanaHTTP(),
+    const PaginaAcercaDe(),
+  ];
 
   void _onItemTapped(int index) {
     setState(() {
@@ -24,12 +28,16 @@ class _PaginaInicioState extends State<PaginaInicio> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _paginaSeleccionada == 0
-          ? AppBar(
-              title: const Text('Bienvenido'),
-              backgroundColor: Colors.green,
-            )
-          : null,
+      appBar: AppBar(
+        title: Text(
+          _paginaSeleccionada == 0
+              ? 'Categorías'
+              : _paginaSeleccionada == 1
+              ? 'Noticias'
+              : 'Acerca de',
+        ),
+        backgroundColor: Colors.green,
+      ),
       body: _paginas[_paginaSeleccionada],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _paginaSeleccionada,
@@ -41,6 +49,7 @@ class _PaginaInicioState extends State<PaginaInicio> {
             label: 'Categorías',
           ),
           BottomNavigationBarItem(icon: Icon(Icons.article), label: 'Noticias'),
+          BottomNavigationBarItem(icon: Icon(Icons.info), label: 'Acerca de'),
         ],
       ),
     );
