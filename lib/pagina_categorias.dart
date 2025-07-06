@@ -1,11 +1,12 @@
 import 'dart:convert';
+import 'package:agronova/screens/inventario/pagina_inventario.dart';
+import 'package:agronova/screens/tareas/pagina_tarea.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
-import 'pagina_cultivos.dart';
-import 'pagina_agricultores.dart';
-import 'pagina_inventario_agricola.dart';
-import 'pagina_tarea_riego_fertilizacion.dart';
+import 'screens/cultivos/pagina_cultivos.dart';
+import 'screens/agricultores/pagina_agricultores.dart';
+
 import 'pagina_mercado_ventas.dart';
 
 class Categoria {
@@ -72,10 +73,10 @@ class _PaginaCategoriasState extends State<PaginaCategorias> {
                   destino = const PaginaAgricultores();
                   break;
                 case 'inventario agricola':
-                  destino = const PaginaInventarioAgricola();
+                  destino = const PaginaInventario();
                   break;
                 case 'tarea de riego y fertilizacion':
-                  destino = const PaginaTareaRiegoFertilizacion();
+                  destino = const PaginaTarea();
                   break;
                 case 'mercado y ventas':
                   destino = const PaginaMercadoVentas();

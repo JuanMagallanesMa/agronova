@@ -10,12 +10,12 @@
     "imagen": "assets/ic_cultivo.jpg"
   },
   {
-    "nombre": "Inventario Agrícola",
+    "nombre": "Inventario Agricola",
     "descripcion": "Control de herramientas, fertilizantes y maquinaria.",
     "imagen": "assets/ic_inventario.jpg"
   },
   {
-    "nombre": "Tarea de Riego y Fertilización",
+    "nombre": "Tarea de Riego y Fertilizacion",
     "descripcion": "Programación y monitoreo de riego y fertilización.",
     "imagen": "assets/ic_riego.jpg"
   },

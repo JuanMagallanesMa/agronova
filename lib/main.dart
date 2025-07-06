@@ -1,11 +1,24 @@
+import 'package:agronova/providers/agricultor_provider.dart';
+import 'package:agronova/providers/cultivo_provider.dart';
+import 'package:agronova/providers/insumo_provider.dart';
+import 'package:agronova/providers/tarea_provider.dart';
 import 'package:agronova/ventana_registro.dart';
 import 'package:flutter/material.dart';
-import 'package:agronova/ventanaHTTP.dart';
-import 'package:agronova/pagina_inicio.dart';
 
-void main() {
-  runApp(const MyApp());
-}
+import 'package:agronova/pagina_inicio.dart';
+import 'package:provider/provider.dart';
+
+void main() => runApp(
+  MultiProvider(
+    providers: [
+      ChangeNotifierProvider(create: (_) => AgricultorProvider()),
+      ChangeNotifierProvider(create: (_) => CultivoProvider()),
+      ChangeNotifierProvider(create: (_) => InsumoProvider()),
+      ChangeNotifierProvider(create: (_) => TareaProvider()),
+    ],
+    child: const MyApp(),
+  ),
+);
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
