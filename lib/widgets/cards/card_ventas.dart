@@ -1,19 +1,15 @@
-import 'package:agronova/models/agricultor.dart';
-import 'package:agronova/models/tarea.dart';
-import 'package:agronova/providers/agricultor_provider.dart';
-import 'package:agronova/providers/tarea_provider.dart';
+import 'package:agronova/models/venta.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
-class TareasCard extends StatelessWidget {
-  final Tarea tareas;
+class VentasCard extends StatelessWidget {
+  final Venta ventas;
   final VoidCallback? onView;
   final VoidCallback? onEdit;
   final VoidCallback? onDelete;
 
-  const TareasCard({
+  const VentasCard({
     super.key,
-    required this.tareas,
+    required this.ventas,
     this.onView,
     this.onEdit,
     this.onDelete,
@@ -21,7 +17,24 @@ class TareasCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
+    // Protegemos cantidadesPorProducto contra null
+    final cantidadesPorProducto = ventas.cantidadesPorProducto ?? {};
+
+    // Construir texto de productos con cantidad y precio
+    final productosTexto = cantidadesPorProducto.entries
+        .map((entry) {
+          final nombre = entry.key.nombre;
+          final precio = entry.key.precioCaja.toStringAsFixed(2);
+          final cantidad = entry.value;
+          return '$nombre (\$$precio) x$cantidad';
+        })
+        .join(', ');
+
+    final cantidadTotal = cantidadesPorProducto.values.fold<int>(
+      0,
+      (sum, val) => sum + val,
+    );
+
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 8),
       elevation: 2,
@@ -39,7 +52,7 @@ class TareasCard extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      tareas.nombre,
+                      ventas.nombre,
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -69,36 +82,28 @@ class TareasCard extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 12),
-              _buildInfoRow(Icons.home_work, 'ID: ${tareas.id ?? "Sin ID"}'),
+
               const SizedBox(height: 8),
-              _buildInfoRow(Icons.title, 'Nombre: ${tareas.nombre}'),
+              _buildInfoRow(Icons.person, 'Nombre: ${ventas.nombre}'),
               const SizedBox(height: 8),
-              _buildInfoRow(
-                Icons.description,
-                'Descripción: ${tareas.descripcion}',
-              ),
-              const SizedBox(height: 8),
-              _buildInfoRow(Icons.grass, 'Cultivo: ${tareas.cultivo.nombre}'),
+              _buildInfoRow(Icons.badge, 'Cédula: ${ventas.cedula}'),
               const SizedBox(height: 8),
               _buildInfoRow(
-                Icons.date_range,
-                'Inicio: ${tareas.fechaInicio.toLocal().toString().split(' ')[0]}',
+                Icons.shopping_cart,
+                productosTexto.isNotEmpty
+                    ? 'Productos: $productosTexto'
+                    : 'Productos: Ninguno',
               ),
               const SizedBox(height: 8),
               _buildInfoRow(
-                Icons.event,
-                'Fin: ${tareas.fechaFin.toLocal().toString().split(' ')[0]}',
+                Icons.format_list_numbered,
+                'Cantidad total: $cantidadTotal',
               ),
+
               const SizedBox(height: 8),
               _buildInfoRow(
-                Icons.people,
-                'Agricultores: ${tareas.agricultores.isNotEmpty ? tareas.agricultores.map((a) => a.nombre).join(", ") : "Ninguno"}',
-              ),
-              const SizedBox(height: 8),
-              _buildInfoRow(
-                Icons.inventory,
-                'Insumos: ${tareas.insumos.isNotEmpty ? tareas.insumos.map((i) => i.descripcion).join(", ") : "Ninguno"}',
+                Icons.attach_money,
+                'Total: \$${ventas.total.toStringAsFixed(2)}',
               ),
             ],
           ),

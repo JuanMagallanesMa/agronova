@@ -1,70 +1,48 @@
-import 'package:agronova/models/insumo.dart';
-import 'package:agronova/models/tarea.dart';
-
-import 'package:agronova/providers/insumo_provider.dart';
-import 'package:agronova/providers/tarea_provider.dart';
-
-import 'package:agronova/screens/inventario/registro_insumo.dart';
-import 'package:agronova/screens/tareas/registro_tarea.dart';
-
-import 'package:agronova/widgets/cards/card_insumos.dart';
-import 'package:agronova/widgets/cards/card_tareas.dart';
+import 'package:agronova/models/venta.dart';
+import 'package:agronova/providers/venta_provider.dart';
+import 'package:agronova/screens/mercado/registro_venta.dart';
+import 'package:agronova/widgets/cards/card_ventas.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class PaginaTarea extends StatefulWidget {
-  const PaginaTarea({super.key});
+class PaginaMercado extends StatefulWidget {
+  const PaginaMercado({super.key});
 
   @override
-  State<PaginaTarea> createState() => _PaginaTareaState();
+  State<PaginaMercado> createState() => _PaginaMercadoState();
 }
 
-class _PaginaTareaState extends State<PaginaTarea> {
+class _PaginaMercadoState extends State<PaginaMercado> {
   String _query = '';
-  String _estadoSeleccionado = '';
 
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  void mostrarDialogoTarea(BuildContext context, Tarea tarea) {
+  void mostrarDialogoVenta(BuildContext context, Venta venta) {
     showDialog(
       context: context,
       builder: (context) {
+        final productosTexto = venta.cantidadesPorProducto.entries
+            .map((entry) {
+              final nombre = entry.key.nombre;
+              final precio = entry.key.precioCaja.toStringAsFixed(2);
+              final cantidad = entry.value;
+              return '$nombre (\$$precio) x$cantidad';
+            })
+            .join(', ');
+
         return AlertDialog(
-          title: Text('Detalles de la tarea'),
+          title: const Text('Detalles de la venta'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildInfoRow(Icons.title, 'Nombre: ${tarea.nombre}'),
+              _buildInfoRow(Icons.person, 'Nombre: ${venta.nombre}'),
+              const SizedBox(height: 8),
+              _buildInfoRow(Icons.info, 'Cédula: ${venta.cedula}'),
+              const SizedBox(height: 8),
+              _buildInfoRow(Icons.shopping_cart, 'Productos: $productosTexto'),
               const SizedBox(height: 8),
               _buildInfoRow(
-                Icons.description,
-                'Descripción: ${tarea.descripcion}',
-              ),
-              const SizedBox(height: 8),
-              _buildInfoRow(Icons.grass, 'Cultivo: ${tarea.cultivo.nombre}'),
-              const SizedBox(height: 8),
-              _buildInfoRow(
-                Icons.date_range,
-                'Inicio: ${tarea.fechaInicio.toLocal().toString().split(' ')[0]}',
-              ),
-              const SizedBox(height: 8),
-              _buildInfoRow(
-                Icons.event,
-                'Fin: ${tarea.fechaFin.toLocal().toString().split(' ')[0]}',
-              ),
-              const SizedBox(height: 8),
-              _buildInfoRow(
-                Icons.people,
-                'Agricultores: ${tarea.agricultores.isNotEmpty ? tarea.agricultores.map((a) => a.nombre).join(", ") : "Ninguno"}',
-              ),
-              const SizedBox(height: 8),
-              _buildInfoRow(
-                Icons.inventory,
-                'Insumos: ${tarea.insumos.isNotEmpty ? tarea.insumos.map((i) => i.descripcion).join(", ") : "Ninguno"}',
+                Icons.attach_money,
+                'Total: \$${venta.total.toStringAsFixed(2)}',
               ),
             ],
           ),
@@ -74,14 +52,12 @@ class _PaginaTareaState extends State<PaginaTarea> {
                 Expanded(
                   child: TextButton(
                     onPressed: () {
-                      Navigator.of(
-                        context,
-                      ).pop(); // Cierra el diálogo antes de navegar
+                      Navigator.of(context).pop();
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) =>
-                              RegistroTareaScreen(tarea: tarea),
+                              RegistroVentaScreen(venta: venta),
                         ),
                       );
                     },
@@ -97,7 +73,7 @@ class _PaginaTareaState extends State<PaginaTarea> {
                         builder: (context) => AlertDialog(
                           title: const Text('Confirmar eliminación'),
                           content: Text(
-                            '¿Estás seguro de que deseas eliminar a "${tarea.descripcion}"?',
+                            '¿Estás seguro de que deseas eliminar la venta de "${venta.nombre}" por \$${venta.total.toStringAsFixed(2)}?',
                           ),
                           actions: [
                             TextButton(
@@ -117,17 +93,15 @@ class _PaginaTareaState extends State<PaginaTarea> {
                       );
 
                       if (confirm == true) {
-                        final tareaProvider = Provider.of<TareaProvider>(
+                        final ventaProvider = Provider.of<VentaProvider>(
                           context,
                           listen: false,
                         );
-                        tareaProvider.deleteTarea(tarea.id!);
-                        Navigator.of(
-                          context,
-                        ).pop(); // Cierra el diálogo principal después de eliminar
+                        ventaProvider.deleteVenta(venta.id!);
+                        Navigator.of(context).pop();
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
-                            content: Text('Tarea eliminada correctamente'),
+                            content: Text('Venta eliminada correctamente'),
                           ),
                         );
                       }
@@ -165,28 +139,12 @@ class _PaginaTareaState extends State<PaginaTarea> {
         children: [
           SearchBar(
             leading: const Icon(Icons.search),
-            hintText: 'Buscar por nombre de tarea',
+            hintText: 'Buscar por cédula del cliente',
             onChanged: (query) {
               setState(() {
                 _query = query;
               });
             },
-          ),
-          const SizedBox(height: 16),
-          Wrap(
-            spacing: 8.0,
-            children: List<Widget>.generate(Tarea.estados.length, (index) {
-              final estado = Tarea.estados[index];
-              return ChoiceChip(
-                label: Text(estado),
-                selected: _estadoSeleccionado == estado,
-                onSelected: (selected) {
-                  setState(() {
-                    _estadoSeleccionado = selected ? estado : '';
-                  });
-                },
-              );
-            }),
           ),
         ],
       ),
@@ -195,12 +153,12 @@ class _PaginaTareaState extends State<PaginaTarea> {
 
   @override
   Widget build(BuildContext context) {
-    final tareaProvider = Provider.of<TareaProvider>(context);
-    final tareas = tareaProvider.searchTarea(_query, _estadoSeleccionado);
+    final ventaProvider = Provider.of<VentaProvider>(context);
+    final ventas = ventaProvider.searchVentas(_query);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Gestion de Tareas'),
+        title: const Text('Gestión de Ventas'),
         backgroundColor: Colors.green[800],
         centerTitle: true,
       ),
@@ -211,7 +169,7 @@ class _PaginaTareaState extends State<PaginaTarea> {
             buildSearch(),
             const SizedBox(height: 16),
             Expanded(
-              child: tareas.isEmpty
+              child: ventas.isEmpty
                   ? const Center(
                       child: Column(
                         children: [
@@ -221,17 +179,17 @@ class _PaginaTareaState extends State<PaginaTarea> {
                             color: Colors.grey,
                           ),
                           SizedBox(height: 16),
-                          Text('No se encontraron tareas'),
+                          Text('No se encontraron ventas'),
                         ],
                       ),
                     )
                   : ListView.builder(
-                      itemCount: tareas.length,
+                      itemCount: ventas.length,
                       itemBuilder: (context, index) {
-                        return TareasCard(
-                          tareas: tareas[index],
+                        return VentasCard(
+                          ventas: ventas[index],
                           onView: () {
-                            mostrarDialogoTarea(context, tareas[index]);
+                            mostrarDialogoVenta(context, ventas[index]);
                           },
                         );
                       },
@@ -245,7 +203,7 @@ class _PaginaTareaState extends State<PaginaTarea> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const RegistroTareaScreen(),
+              builder: (context) => const RegistroVentaScreen(),
             ),
           );
         },

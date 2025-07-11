@@ -1,18 +1,20 @@
 import 'package:agronova/models/cultivo.dart';
 
-
 class Venta {
-  final String? id;
-  final String nombre;
-  final String cedula;
-  final List<Cultivo> productos;
-  final double total;
+  String? id;
+  String nombre;
+  String cedula;
+  Map<Cultivo, int> cantidadesPorProducto;
+  int cantidad;
+  double total;
 
   Venta({
     this.id,
     required this.nombre,
     required this.cedula,
-    required this.productos,
+    Map<Cultivo, int>? cantidadesPorProducto,
     required this.total,
-  }) : assert(total >= 0, 'El total no puede ser negativo');
+    required this.cantidad,
+  }) : cantidadesPorProducto = cantidadesPorProducto ?? {},
+       assert(total >= 0, 'El total no puede ser negativo');
 }

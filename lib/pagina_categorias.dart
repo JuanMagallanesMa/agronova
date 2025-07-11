@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:agronova/screens/inventario/pagina_inventario.dart';
+import 'package:agronova/screens/mercado/pagina_mercado.dart';
 import 'package:agronova/screens/tareas/pagina_tarea.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
@@ -79,7 +80,7 @@ class _PaginaCategoriasState extends State<PaginaCategorias> {
                   destino = const PaginaTarea();
                   break;
                 case 'mercado y ventas':
-                  destino = const PaginaMercadoVentas();
+                  destino = const PaginaMercado();
                   break;
                 default:
                   destino = null;

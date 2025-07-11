@@ -2,6 +2,7 @@ import 'package:agronova/providers/agricultor_provider.dart';
 import 'package:agronova/providers/cultivo_provider.dart';
 import 'package:agronova/providers/insumo_provider.dart';
 import 'package:agronova/providers/tarea_provider.dart';
+import 'package:agronova/providers/venta_provider.dart';
 import 'package:agronova/ventana_registro.dart';
 import 'package:flutter/material.dart';
 
@@ -15,6 +16,9 @@ void main() => runApp(
       ChangeNotifierProvider(create: (_) => CultivoProvider()),
       ChangeNotifierProvider(create: (_) => InsumoProvider()),
       ChangeNotifierProvider(create: (_) => TareaProvider()),
+      ChangeNotifierProvider(
+        create: (_) => VentaProvider(),
+      ), // Uncomment if you have a VentaProvider
     ],
     child: const MyApp(),
   ),
