@@ -23,6 +23,9 @@ class _PaginaInventarioState extends State<PaginaInventario> {
   @override
   void initState() {
     super.initState();
+    Future.microtask(() {
+      Provider.of<InsumoProvider>(context, listen: false).fetchInsumos();
+    });
   }
 
   Widget buildSearch() {

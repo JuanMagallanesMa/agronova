@@ -50,34 +50,32 @@ class _RegistroAgricultorScreenState extends State<RegistroAgricultorScreen> {
       );
 
       if (widget.agricultor == null) {
-        // Crear nuevo agricultor
         agricultoresProvider.addAgricultor(
           Agricultor(
-            id: Uuid().v4(),
             nombre: _nombreController.text,
-            edad: int.parse(_edadController.text),
+            edad: int.tryParse(_edadController.text),
             zona: _zonaController.text,
             experiencia: _experienciaController.text,
           ),
         );
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text('Agricultor registrado')));
+        ).showSnackBar(const SnackBar(content: Text('Agricultor registrado')));
       } else {
-        // Actualizar agricultor existente
-        widget.agricultor!.nombre = _nombreController.text;
-        widget.agricultor!.edad = int.parse(_edadController.text);
-        widget.agricultor!.zona = _zonaController.text;
-        widget.agricultor!.experiencia = _experienciaController.text;
+        final actualizado = widget.agricultor!;
+        actualizado.nombre = _nombreController.text;
+        actualizado.edad = int.tryParse(_edadController.text);
+        actualizado.zona = _zonaController.text;
+        actualizado.experiencia = _experienciaController.text;
 
-        agricultoresProvider.notifyListeners();
+        agricultoresProvider.updateAgricultor(actualizado);
 
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text('Agricultor actualizado')));
+        ).showSnackBar(const SnackBar(content: Text('Agricultor actualizado')));
       }
 
-      Navigator.of(context).pop(); // Cierra la pantalla tras guardar
+      Navigator.of(context).pop();
     }
   }
 

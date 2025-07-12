@@ -1,5 +1,7 @@
 import 'package:agronova/models/insumo.dart';
 import 'package:agronova/models/tarea.dart';
+import 'package:agronova/providers/agricultor_provider.dart';
+import 'package:agronova/providers/cultivo_provider.dart';
 
 import 'package:agronova/providers/insumo_provider.dart';
 import 'package:agronova/providers/tarea_provider.dart';
@@ -26,6 +28,21 @@ class _PaginaTareaState extends State<PaginaTarea> {
   @override
   void initState() {
     super.initState();
+    final tareaProvider = Provider.of<TareaProvider>(context, listen: false);
+    final cultivoProvider = Provider.of<CultivoProvider>(
+      context,
+      listen: false,
+    );
+    final agricultorProvider = Provider.of<AgricultorProvider>(
+      context,
+      listen: false,
+    );
+    final insumoProvider = Provider.of<InsumoProvider>(context, listen: false);
+
+    cultivoProvider.fetchCultivos();
+    agricultorProvider.fetchAgricultores();
+    insumoProvider.fetchInsumos();
+    tareaProvider.fetchTareas();
   }
 
   void mostrarDialogoTarea(BuildContext context, Tarea tarea) {

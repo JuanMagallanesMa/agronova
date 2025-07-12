@@ -16,9 +16,13 @@ class _PaginaAgricultoresState extends State<PaginaAgricultores> {
   String _query = '';
 
   @override
-  void initState() {
-    super.initState();
-  }
+void initState() {
+  super.initState();
+  Future.microtask(() {
+    Provider.of<AgricultorProvider>(context, listen: false).fetchAgricultores();
+  });
+}
+
 
   Widget buildSearch() {
     return SearchBar(

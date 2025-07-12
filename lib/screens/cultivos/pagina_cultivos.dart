@@ -19,10 +19,13 @@ class PaginaCultivos extends StatefulWidget {
 class _PaginaCultivosState extends State<PaginaCultivos> {
   String _query = '';
   String _categoriaSeleccionada = '';
-  
+
   @override
   void initState() {
     super.initState();
+    Future.microtask(() {
+      Provider.of<CultivoProvider>(context, listen: false).fetchCultivos();
+    });
   }
 
   Widget buildSearch() {
@@ -62,7 +65,10 @@ class _PaginaCultivosState extends State<PaginaCultivos> {
   @override
   Widget build(BuildContext context) {
     final cultivoProvider = Provider.of<CultivoProvider>(context);
-    final cultivos = cultivoProvider.searchCultivo(_query, _categoriaSeleccionada);
+    final cultivos = cultivoProvider.searchCultivo(
+      _query,
+      _categoriaSeleccionada,
+    );
 
     return Scaffold(
       appBar: AppBar(

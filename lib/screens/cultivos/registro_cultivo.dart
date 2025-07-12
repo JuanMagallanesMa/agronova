@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:agronova/models/cultivo.dart';
 import 'package:agronova/providers/cultivo_provider.dart';
 import 'package:flutter/material.dart';
@@ -25,8 +23,6 @@ class _RegistroCultivoScreenState extends State<RegistroCultivoScreen> {
   DateTime? _fechaInicioSeleccionada;
   String? _categoriaSeleccionada;
 
-  late Cultivo cultivo;
-
   @override
   void initState() {
     super.initState();
@@ -40,13 +36,14 @@ class _RegistroCultivoScreenState extends State<RegistroCultivoScreen> {
           '${_fechaInicioSeleccionada!.day.toString().padLeft(2, '0')}/'
           '${_fechaInicioSeleccionada!.month.toString().padLeft(2, '0')}/'
           '${_fechaInicioSeleccionada!.year}';
+      _categoriaSeleccionada = widget.cultivo!.categoria;
     }
   }
 
   Future<void> _selectDate() async {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
+      initialDate: _fechaInicioSeleccionada ?? DateTime.now(),
       firstDate: DateTime(1900),
       lastDate: DateTime(2030),
     );
@@ -71,7 +68,7 @@ class _RegistroCultivoScreenState extends State<RegistroCultivoScreen> {
     super.dispose();
   }
 
-  void _submitForm() {
+  Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
       final cultivoProvider = Provider.of<CultivoProvider>(
         context,
@@ -80,11 +77,11 @@ class _RegistroCultivoScreenState extends State<RegistroCultivoScreen> {
 
       if (widget.cultivo == null) {
         // Crear nuevo Cultivo
-        cultivoProvider.addCultivo(
+        await cultivoProvider.addCultivo(
           Cultivo(
             id: Uuid().v4(),
             nombre: _nombreController.text,
-            categoria: _categoriaController.text,
+            categoria: _categoriaSeleccionada ?? '',
             ubicacion: _ubicacionController.text,
             precioCaja: double.parse(_precioCajaController.text),
             fechaInicio: _fechaInicioSeleccionada!,
@@ -92,20 +89,23 @@ class _RegistroCultivoScreenState extends State<RegistroCultivoScreen> {
         );
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text('Cultivo registrado')));
+        ).showSnackBar(const SnackBar(content: Text('Cultivo registrado')));
       } else {
         // Actualizar Cultivo existente
-        widget.cultivo!.nombre = _nombreController.text;
-        widget.cultivo!.categoria = _categoriaController.text;
-        widget.cultivo!.ubicacion = _ubicacionController.text;
-        widget.cultivo!.precioCaja = double.parse(_precioCajaController.text);
-        widget.cultivo!.fechaInicio = _fechaInicioSeleccionada!;
+        final cultivoActualizado = Cultivo(
+          id: widget.cultivo!.id,
+          nombre: _nombreController.text,
+          categoria: _categoriaSeleccionada ?? '',
+          ubicacion: _ubicacionController.text,
+          precioCaja: double.parse(_precioCajaController.text),
+          fechaInicio: _fechaInicioSeleccionada!,
+        );
 
-        cultivoProvider.notifyListeners();
+        await cultivoProvider.updateCultivo(cultivoActualizado);
 
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text('Cultivo actualizado')));
+        ).showSnackBar(const SnackBar(content: Text('Cultivo actualizado')));
       }
 
       Navigator.of(context).pop(); // Cierra la pantalla tras guardar
@@ -119,6 +119,7 @@ class _RegistroCultivoScreenState extends State<RegistroCultivoScreen> {
         title: Text(
           widget.cultivo == null ? 'Registrar Cultivo' : 'Editar Cultivo',
         ),
+        backgroundColor: Colors.green[800],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -128,17 +129,17 @@ class _RegistroCultivoScreenState extends State<RegistroCultivoScreen> {
             children: [
               TextFormField(
                 controller: _nombreController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Nombre',
                   border: OutlineInputBorder(),
                 ),
                 validator: (value) =>
                     value == null || value.isEmpty ? 'Ingrese el nombre' : null,
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               DropdownButtonFormField<String>(
                 value: _categoriaSeleccionada,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Categoría',
                   border: OutlineInputBorder(),
                 ),
@@ -161,38 +162,39 @@ class _RegistroCultivoScreenState extends State<RegistroCultivoScreen> {
                   return null;
                 },
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               TextFormField(
                 controller: _ubicacionController,
-                decoration: InputDecoration(
-                  labelText: 'Ubicacion',
+                decoration: const InputDecoration(
+                  labelText: 'Ubicación',
                   border: OutlineInputBorder(),
                 ),
                 validator: (value) => value == null || value.isEmpty
-                    ? 'Ingrese la ubicacion'
+                    ? 'Ingrese la ubicación'
                     : null,
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               TextFormField(
                 controller: _precioCajaController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Precio por Caja',
                   border: OutlineInputBorder(),
                   suffixIcon: Icon(Icons.attach_money),
                   suffixText: 'USD',
                 ),
+                keyboardType: TextInputType.numberWithOptions(decimal: true),
                 validator: (value) => value == null || value.isEmpty
                     ? 'Ingrese el precio por caja'
                     : null,
               ),
-              SizedBox(height: 24),
+              const SizedBox(height: 24),
               TextFormField(
                 controller: _fechaInicioController,
                 decoration: InputDecoration(
                   labelText: 'Fecha de Inicio',
-                  border: OutlineInputBorder(),
+                  border: const OutlineInputBorder(),
                   suffixIcon: IconButton(
-                    icon: Icon(Icons.calendar_today),
+                    icon: const Icon(Icons.calendar_today),
                     onPressed: _selectDate,
                   ),
                 ),
@@ -201,9 +203,13 @@ class _RegistroCultivoScreenState extends State<RegistroCultivoScreen> {
                     ? 'Seleccione la fecha de inicio'
                     : null,
               ),
-              SizedBox(height: 24),
+              const SizedBox(height: 24),
               ElevatedButton(
                 onPressed: _submitForm,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green[800],
+                  foregroundColor: Colors.white,
+                ),
                 child: Text(
                   widget.cultivo == null ? 'Registrar' : 'Actualizar',
                 ),

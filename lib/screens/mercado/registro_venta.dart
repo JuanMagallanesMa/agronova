@@ -65,7 +65,7 @@ class _RegistroVentaScreenState extends State<RegistroVentaScreen> {
         .join(', ');
   }
 
-  void _submitForm() {
+  void _submitForm() async {
     if (_formKey.currentState!.validate()) {
       if (_cantidadesSeleccionadas.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -80,20 +80,32 @@ class _RegistroVentaScreenState extends State<RegistroVentaScreen> {
 
       final venta = Venta(
         id: widget.venta?.id ?? const Uuid().v4(),
-        nombre: _nombreController.text,
-        cedula: _cedulaController.text,
+        nombre: _nombreController.text.trim(),
+        cedula: _cedulaController.text.trim(),
         cantidadesPorProducto: Map.from(_cantidadesSeleccionadas),
         total: calcularTotal(),
         cantidad: _cantidadesSeleccionadas.values.fold(0, (a, b) => a + b),
       );
 
-      if (widget.venta == null) {
-        ventaProvider.addVenta(venta);
-      } else {
-        ventaProvider.updateVenta(venta);
-      }
+      try {
+        if (widget.venta == null) {
+          await ventaProvider.addVenta(venta);
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Venta registrada con éxito')),
+          );
+        } else {
+          await ventaProvider.updateVenta(venta);
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Venta actualizada correctamente')),
+          );
+        }
 
-      Navigator.pop(context);
+        Navigator.pop(context);
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error al guardar la venta: $e')),
+        );
+      }
     }
   }
 

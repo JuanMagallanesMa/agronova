@@ -1,28 +1,35 @@
+import 'package:agronova/firebase_options.dart';
 import 'package:agronova/providers/agricultor_provider.dart';
 import 'package:agronova/providers/cultivo_provider.dart';
 import 'package:agronova/providers/insumo_provider.dart';
 import 'package:agronova/providers/tarea_provider.dart';
 import 'package:agronova/providers/venta_provider.dart';
 import 'package:agronova/ventana_registro.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 import 'package:agronova/pagina_inicio.dart';
 import 'package:provider/provider.dart';
 
-void main() => runApp(
-  MultiProvider(
-    providers: [
-      ChangeNotifierProvider(create: (_) => AgricultorProvider()),
-      ChangeNotifierProvider(create: (_) => CultivoProvider()),
-      ChangeNotifierProvider(create: (_) => InsumoProvider()),
-      ChangeNotifierProvider(create: (_) => TareaProvider()),
-      ChangeNotifierProvider(
-        create: (_) => VentaProvider(),
-      ), // Uncomment if you have a VentaProvider
-    ],
-    child: const MyApp(),
-  ),
-);
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => AgricultorProvider()),
+        ChangeNotifierProvider(create: (_) => CultivoProvider()),
+        ChangeNotifierProvider(create: (_) => InsumoProvider()),
+        ChangeNotifierProvider(create: (_) => TareaProvider()),
+        ChangeNotifierProvider(create: (_) => VentaProvider()),
+      ],
+      child: const MyApp(),
+    ),
+  );
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

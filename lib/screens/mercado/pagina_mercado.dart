@@ -1,4 +1,5 @@
 import 'package:agronova/models/venta.dart';
+import 'package:agronova/providers/cultivo_provider.dart';
 import 'package:agronova/providers/venta_provider.dart';
 import 'package:agronova/screens/mercado/registro_venta.dart';
 import 'package:agronova/widgets/cards/card_ventas.dart';
@@ -14,6 +15,25 @@ class PaginaMercado extends StatefulWidget {
 
 class _PaginaMercadoState extends State<PaginaMercado> {
   String _query = '';
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() async {
+      final cultivoProvider = Provider.of<CultivoProvider>(
+        context,
+        listen: false,
+      );
+      final ventaProvider = Provider.of<VentaProvider>(context, listen: false);
+
+      // 1. Carga los cultivos desde Firestore
+      if (cultivoProvider.cultivos.isEmpty) {
+        await cultivoProvider.fetchCultivos();
+      }
+
+      // 2. Carga las ventas con los cultivos disponibles
+      await ventaProvider.cargarVentas(cultivoProvider.cultivos);
+    });
+  }
 
   void mostrarDialogoVenta(BuildContext context, Venta venta) {
     showDialog(

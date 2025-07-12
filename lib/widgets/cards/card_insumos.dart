@@ -36,7 +36,7 @@ class InsumoCard extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      insumo.tipo,
+                      insumo.descripcion,
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
